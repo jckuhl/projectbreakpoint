@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>JavaScript</title>
+		<link rel="stylesheet" type="text/css" href="css/pbp.css">
+	</head>
+
+	<body>
+
+	<header>
+		<h1>JavaScript</h1>
+	</header>
+	<body>
+		<div class="container">
+			<nav class="nav-left">
+				<ul>
+					<a href="index.html"><li>Home</li></a>
+					<a href="https://jonathan-kuhl.squarespace.com/"><li>Blog</li></a>
+					<a href="about.html"><li>Who Am I</li></a>
+					<a href="contact.html"><li>Contact</li></a>
+					<a href="generic.html"><li>Generic</li></a>
+					<li>HTML/CSS</li>
+					<li>JavaScript</li>
+					<li>Python</li>
+					<li>C++</li>
+					<li>Swift</li>
+				</ul>
+			</nav>
+
+			<div class="primary-content">
+				<h2>JavaScript Snippets</h2>
+
+				<p>Here you can find numerous JavaScript snippets written by myself or other programmers.  You can use them in your projects or read about them to learn a bit about the language.  If the snippets are not by me, they will be properly cited.</p>
+
+				<h2>For Of vs For In</h2>
+
+				<p>JavaScript has two For Loops that aren't like the traditional <span class="inline-code">for(var i = 0; i &lt; array.length; i++) {</span> you might be use to, nor are they quite like the For In loop that comes with Python.  They have their own quirks that can trip up a new programmer.  The are the For In and the For Of loops and they are quite different from each other.</p>
+
+				<p>Take the following example from my own <a href="https://jsfiddle.net/jkuhl/z46vmrLe/" target="_blank">JSFiddle</a>: </p>
+
+				<p class="code">
+//correct
+function averages() {
+	var sum = 0;
+	//iterates through the value of the function's arguments at index i
+	for (i of arguments) {
+		sum += i;
+	}
+	return sum / arguments.length;
+}
+
+//incorrect
+function averages2() {
+	var sum = 0;
+	//iterates through the index of the function's arguments, not the values
+	for (i in arguments) {
+		sum += i;
+	}
+	return sum / arguments.length;
+}
+
+
+var displayHTMLright = "&#60;p&#62;For Of produces the correct result: &#60;/p&#62;";
+document.getElementById("myDiv1").innerHTML = displayHTMLright + averages(1,2,3);
+
+var displayHTMLwrong = "&#60;p&#62;For In produces the incorrect result: &#60;/p&#62;";
+document.getElementById("myDiv2").innerHTML = displayHTMLwrong + averages2(1,2,3);
+				</p>
+
+				<p>Both <span class="inline-code">average()</span> and <span class="inline-code">average2()</span> are exactly alike, except for one difference.  One uses "of" and the other uses "in."  This makes all the difference.</p>
+
+				<p>If I ran this code, what would happen?  Feel free to head over to the fiddle and find out for yourself.  The first function gives the correct answer, the average of 1, 2, and 3 is 2.  The second does not.  It gives us 4.  Why?</p>
+
+				<p>Well lets look at what's going on here.  These functions, you'll notice, have no named parameters and yet take arguments.  These are  examples of functions with a variable number of arguments.  Any arguments passed into the function get placed into a built-in array helpfully called "arguments."  "arguments" was defined by JavaScript itself, it is a part of the language so I did not have to declare it.  It is also locally scoped to the function in which it is called, so the arguments array in one function is different than the arguments array in the other.<p>
+
+				<p>Both functions take the arguments array and use a for loop to iterate through the array, adding the elements in the array together and then returning the sum divided by the length of the array.  However, the way the two loops iterate through the array is key as to why one of these functions works and the other does not.</p>
+
+				<p>For In loops iterate through the index of an array or an object.  Therefore the For In loop is incorrect.  After all any time I try to pass three values to <span class="inline-code">averages2()</span> it will always get the result of 4 because it will always iterate through 0,1, and 2, the indexes of an array with three items.  If we tried to pass seven arguments to the function, it would iterate through indexes 0 through 6, rather than the values of those arguments, which is incorrect</p>
+
+				<p>The For Of loop is the correct loop.  It cycles through the <em>values</em> of the array or object.  So when it is given the values of 1,2 and 3, it adds 1 + 2 + 3 and then divides by 3 and gets 2.  So remember, For Of iterates through values while For In iterates through keys and indexes.</p>
+
+				<p>But wait a minute.  If For In iterates through 0, 1 and 2, then why does it calculate the value 4?  Well, this is an example of JavaScript's dynamic typing.  Remember that an object's keys are always strings and arrays in JavaScript are a special type of object.  An array's key value pair is <span class="inline-code">"index":value</span>.  JavaScript, when running <span class="inline-code">averages2()</span> sees that the variable sum has a value of zero, a number, but also sees that we're adding a string to it, so it coerces sum to be a string.  The end result of the For In loop, which you can check with <span class="inline-code">console.log(sum)</span> above the return statement, is 0012.  In other words, the strings "0" + "0" + "1" + "2", the original value concatinated with the three indexes.  In the return statement, JavaScript sees a division with a number.  It cannot divide strings, so it assumes that sum must also be a number so it coerces it back to a number, which is 12.  12 divided by 3 is of course, 4. </p>
+
+				<p>Let me reiterate one more time.  Use For Of to iterate through an objects values and use For In to iterate through an objects keys or indexes.</p>
+			</div>
+		</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="js/pbpscript.js"></script>
+	</body>
+</html>
